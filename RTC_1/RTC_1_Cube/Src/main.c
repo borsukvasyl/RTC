@@ -66,13 +66,12 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN 0 */
 
-uint8_t received_data[7];
-uint8_t send_data[7];
-
-int seconds, minutes, hours, weekday, date, month, year;
-
 inline int bcd_to_decimal(uint8_t bcd_value) {
 	return ((bcd_value & 0xF0) >> 4) * 10 + (bcd_value & 0x0F);
+}
+
+inline int decimal_to_bcd(uint8_t decimal) {
+	return ((decimal / 10) << 4) + decimal % 10;
 }
 
 /* USER CODE END 0 */
@@ -81,7 +80,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	 initialise_monitor_handles();
+  initialise_monitor_handles();
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -106,6 +105,22 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
+  // Initializing start time
+
+  uint8_t received_data[7];
+  uint8_t send_data[7];
+  send_data[0] = decimal_to_bcd(0);   // seconds
+  send_data[1] = decimal_to_bcd(45);  // minutes
+  send_data[2] = decimal_to_bcd(15);  // hours
+  send_data[3] = decimal_to_bcd(4);   // weekday
+  send_data[4] = decimal_to_bcd(16);  // date
+  send_data[5] = decimal_to_bcd(11);  // month
+  send_data[6] = decimal_to_bcd(17);  // year
+
+  HAL_I2C_Mem_Write(&hi2c1, RTC_ADDRESS, 0, 1, send_data, 7, 500);
+
+  int seconds, minutes, hours, weekday, date, month, year;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -116,16 +131,16 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 4, 500);
+	  HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
 
 	  seconds = bcd_to_decimal(received_data[0]);
 	  minutes = bcd_to_decimal(received_data[1]);
 	  hours = bcd_to_decimal(received_data[2]);
-	  //weekday = bcd_to_decimal(received_data[3]);
-	  //date = bcd_to_decimal(received_data[4]);
-	  //month = bcd_to_decimal(received_data[5]);
-	  //year = bcd_to_decimal(received_data[6]);
-	  //printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
+	  weekday = bcd_to_decimal(received_data[3]);
+	  date = bcd_to_decimal(received_data[4]);
+	  month = bcd_to_decimal(received_data[5]);
+	  year = bcd_to_decimal(received_data[6]);
+	  printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
 	  printf("%i : %i : %i\n", hours, minutes, seconds);
 	  printf("+-------------+\n");
 

@@ -455,3 +455,193 @@ arm-none-eabi-size "RTC_1_Cube.elf"
    text	   data	    bss	    dec	    hex	filename
   32620	   2496	   1956	  37072	   90d0	RTC_1_Cube.elf
  
+16:01:40 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+../Src/main.c:72:47: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+ uint8_t send_data[7] = {0, 45, 15, 4, 16, 11, 2017};
+                                               ^~~~
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33260	   2504	   1948	  37712	   9350	RTC_1_Cube.elf
+ 
+16:01:47 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+make: Nothing to be done for 'all'.
+16:02:03 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+make: Nothing to be done for 'all'.
+16:02:06 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+make: Nothing to be done for 'all'.
+16:05:28 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+../Src/main.c:71:47: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+ uint8_t send_data[7] = {0, 45, 15, 4, 16, 11, 2017};
+                                               ^~~~
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33300	   2504	   1948	  37752	   9378	RTC_1_Cube.elf
+ 
+16:13:19 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+../Src/main.c: In function 'main':
+../Src/main.c:118:33: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+   send_data[6] = decimal_to_bcd(2017);
+                                 ^~~~
+../Src/main.c:122:54: warning: unused variable 'year' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                                      ^~~~
+../Src/main.c:122:47: warning: unused variable 'month' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                               ^~~~~
+../Src/main.c:122:41: warning: unused variable 'date' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                         ^~~~
+../Src/main.c:122:32: warning: unused variable 'weekday' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                ^~~~~~~
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33268	   2496	   1916	  37680	   9330	RTC_1_Cube.elf
+ 
+16:16:27 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+../Src/main.c: In function 'main':
+../Src/main.c:122:54: warning: unused variable 'year' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                                      ^~~~
+../Src/main.c:122:47: warning: unused variable 'month' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                               ^~~~~
+../Src/main.c:122:41: warning: unused variable 'date' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                         ^~~~
+../Src/main.c:122:32: warning: unused variable 'weekday' [-Wunused-variable]
+   int seconds, minutes, hours, weekday, date, month, year;
+                                ^~~~~~~
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33268	   2496	   1916	  37680	   9330	RTC_1_Cube.elf
+ 
+16:17:08 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33420	   2496	   1916	  37832	   93c8	RTC_1_Cube.elf
+ 
+16:17:12 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+make: Nothing to be done for 'all'.
+16:23:34 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33420	   2496	   1916	  37832	   93c8	RTC_1_Cube.elf
+ 
+16:25:37 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+Building file: ../Src/main.c
+Invoking: MCU GCC Compiler
+E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
+Finished building: ../Src/main.c
+ 
+Building target: RTC_1_Cube.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
+Finished building target: RTC_1_Cube.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
+arm-none-eabi-size "RTC_1_Cube.elf"
+   text	   data	    bss	    dec	    hex	filename
+  33420	   2496	   1916	  37832	   93c8	RTC_1_Cube.elf
+ 
+16:26:55 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+make all 
+make: Nothing to be done for 'all'.

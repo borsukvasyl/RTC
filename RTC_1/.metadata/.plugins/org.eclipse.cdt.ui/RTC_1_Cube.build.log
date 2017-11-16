@@ -1,23 +1,6 @@
-15:29:47 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
+16:26:55 **** Incremental Build of configuration Debug for project RTC_1_Cube ****
 make all 
-Building file: ../Src/main.c
-Invoking: MCU GCC Compiler
-E:\Vasyl\Programs\STM32F303\RTC\RTC_1\RTC_1_Cube\Debug
-arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F303xC -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Device/ST/STM32F3xx/Include" -I"E:/Vasyl/Programs/STM32F303/RTC/RTC_1/RTC_1_Cube/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
-Finished building: ../Src/main.c
- 
-Building target: RTC_1_Cube.elf
-Invoking: MCU GCC Linker
-arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -specs=rdimon.specs -T"../STM32F303VCTx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "RTC_1_Cube.elf" @"objects.list"   -lm
-Finished building target: RTC_1_Cube.elf
- 
-make --no-print-directory post-build
-Generating binary and Printing size information:
-arm-none-eabi-objcopy -O binary "RTC_1_Cube.elf" "RTC_1_Cube.bin"
-arm-none-eabi-size "RTC_1_Cube.elf"
-   text	   data	    bss	    dec	    hex	filename
-  32620	   2496	   1956	  37072	   90d0	RTC_1_Cube.elf
- 
+make: Nothing to be done for 'all'.
 
-15:29:48 Build Finished (took 1s.248ms)
+16:26:56 Build Finished (took 241ms)
 

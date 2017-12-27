@@ -44,9 +44,18 @@
 
 /* USER CODE BEGIN Includes */
 
+#include "lcd5110.h"
+
 #define RTC_ADDRESS 0x68*2
 
 extern void initialise_monitor_handles(void);
+
+#define LCD_CS_Pin GPIO_PIN_12
+#define LCD_CS_GPIO_Port GPIOB
+#define LCD_RST_Pin GPIO_PIN_11
+#define LCD_RST_GPIO_Port GPIOB
+#define LCD_DC_Pin GPIO_PIN_13
+#define LCD_DC_GPIO_Port GPIOB
 
 /* USER CODE END Includes */
 
@@ -83,6 +92,14 @@ int RTC_write_data(uint8_t *write_data) {
 int RTC_read_data(uint8_t *received_data) {
 	HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
 	return 0;
+}
+
+LCD5110_display lcd1; // display initialization
+
+void display_on_clock(int hour, int minute, int second, char* weekday, int date, int month, int year){
+	LCD5110_clear_scr(&lcd1.hw_conf);
+	LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+	LCD5110_printf(&lcd1, BLACK, "    %i:%i:%i\n %s\n %i.%i.%i\n", hour, minute, second, weekday, date, month, year);
 }
 
 /* USER CODE END 0 */
@@ -152,6 +169,8 @@ int main(void)
 	  date = bcd_to_decimal(received_data[4]);
 	  month = bcd_to_decimal(received_data[5]);
 	  year = bcd_to_decimal(received_data[6]);
+
+	  display_on_clock(hours, minutes, seconds, "Mon", date, month, year);
 	  printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
 	  printf("%i : %i : %i\n", hours, minutes, seconds);
 	  printf("+-------------+\n");

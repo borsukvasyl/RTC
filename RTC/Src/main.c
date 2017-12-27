@@ -44,9 +44,19 @@
 
 /* USER CODE BEGIN Includes */
 
-#define RTC_ADDRESS 0x68*2
+#include "lcd5110.h"
 
-extern void initialise_monitor_handles(void);
+#define RTC_ADDRESS 0x68*2
+#define NUMBER_OF_DAYS_IN_WEEK 7
+
+// extern void initialise_monitor_handles(void);
+
+#define LCD_CS_Pin GPIO_PIN_12
+#define LCD_CS_GPIO_Port GPIOB
+#define LCD_RST_Pin GPIO_PIN_11
+#define LCD_RST_GPIO_Port GPIOB
+#define LCD_DC_Pin GPIO_PIN_13
+#define LCD_DC_GPIO_Port GPIOB
 
 /* USER CODE END Includes */
 
@@ -67,6 +77,16 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN 0 */
 
+typedef struct {
+  uint8_t seconds; //Seconds parameter, from 00 to 59
+  uint8_t minutes; //Minutes parameter, from 00 to 59
+  uint8_t hours;   //Hours parameter, 24Hour mode, 00 to 23
+  uint8_t weekday; //Day in a week, from 1 to 7
+  uint8_t date;    //Date in a month, 1 to 31
+  uint8_t month;   //Month in a year, 1 to 12
+  uint8_t year;    //Year parameter
+} DS3231_Time;
+
 inline int bcd_to_decimal(uint8_t bcd_value) {
 	return ((bcd_value & 0xF0) >> 4) * 10 + (bcd_value & 0x0F);
 }
@@ -75,14 +95,49 @@ inline int decimal_to_bcd(uint8_t decimal) {
 	return ((decimal / 10) << 4) + decimal % 10;
 }
 
-int RTC_write_data(uint8_t *write_data) {
-	HAL_I2C_Mem_Write(&hi2c1, RTC_ADDRESS, 0, 1, write_data, 7, 500);
+int RTC_write_data(DS3231_Time* time) {
+	uint8_t send_data[7];
+	send_data[0] = decimal_to_bcd(time->seconds);
+	send_data[1] = decimal_to_bcd(time->minutes);
+	send_data[2] = decimal_to_bcd(time->hours);
+	send_data[3] = decimal_to_bcd(time->weekday);
+	send_data[4] = decimal_to_bcd(time->date);
+	send_data[5] = decimal_to_bcd(time->month);
+	send_data[6] = decimal_to_bcd(time->year);
+	HAL_I2C_Mem_Write(&hi2c1, RTC_ADDRESS, 0, 1, send_data, 7, 500);
 	return 0;
 }
 
-int RTC_read_data(uint8_t *received_data) {
+int RTC_read_data(DS3231_Time* time) {
+	uint8_t received_data[7];
 	HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
+	time->seconds = bcd_to_decimal(received_data[0]);
+    time->minutes = bcd_to_decimal(received_data[1]);
+	time->hours = bcd_to_decimal(received_data[2]);
+	time->weekday = bcd_to_decimal(received_data[3]);
+	time->date = bcd_to_decimal(received_data[4]);
+	time->month = bcd_to_decimal(received_data[5]);
+	time->year = bcd_to_decimal(received_data[6]);
 	return 0;
+}
+
+
+LCD5110_display lcd1; // display initialization
+
+const char *weekday_names[NUMBER_OF_DAYS_IN_WEEK] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+
+inline char* convert_weekday(int weekday_number){ // weekday in range [1, 7]
+  if (weekday_number > NUMBER_OF_DAYS_IN_WEEK || weekday_number <= 0)
+    return "";
+  else
+    return weekday_names[weekday_number-1];
+}
+
+void display_on_clock(DS3231_Time* time){
+	LCD5110_clear_scr(&lcd1.hw_conf);
+	LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+	LCD5110_printf(&lcd1, BLACK, "   %02d:%02d:%02d\n %s\n %02d.%02d.%d\n",
+			time->hours, time->minutes, time->seconds, convert_weekday(time->weekday), time->date, time->month, time->year);
 }
 
 /* USER CODE END 0 */
@@ -91,7 +146,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	initialise_monitor_handles();
+  //initialise_monitor_handles();
 
   /* USER CODE END 1 */
 
@@ -118,20 +173,26 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  uint8_t received_data[7];
-  uint8_t send_data[7];
+  DS3231_Time time;
+  time.seconds = 55;
+  time.minutes = 59;
+  time.hours = 23;
+  time.weekday = 1;
+  time.date = 31;
+  time.month = 12;
+  time.year = 17;
+  RTC_write_data(&time);
 
-  send_data[0] = decimal_to_bcd(0);   // seconds
-  send_data[1] = decimal_to_bcd(40);  // minutes
-  send_data[2] = decimal_to_bcd(13);  // hours
-  send_data[3] = decimal_to_bcd(4);   // weekday
-  send_data[4] = decimal_to_bcd(16);  // date
-  send_data[5] = decimal_to_bcd(11);  // month
-  send_data[6] = decimal_to_bcd(17);  // year
 
-  RTC_write_data(send_data);
-
-  int seconds, minutes, hours, weekday, date, month, year;
+  lcd1.hw_conf.spi_handle = &hspi2;
+  lcd1.hw_conf.spi_cs_pin = GPIO_PIN_14;
+  lcd1.hw_conf.spi_cs_port = GPIOB;
+  lcd1.hw_conf.rst_pin =  GPIO_PIN_11;
+  lcd1.hw_conf.rst_port = GPIOB;
+  lcd1.hw_conf.dc_pin =  GPIO_PIN_12;
+  lcd1.hw_conf.dc_port = GPIOB;
+  lcd1.def_scr = lcd5110_def_scr;
+  LCD5110_init(&lcd1.hw_conf, LCD5110_NORMAL_MODE, 0x40, 2, 3);
 
   /* USER CODE END 2 */
 
@@ -143,18 +204,12 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  RTC_read_data(received_data);
+	  RTC_read_data(&time);
 
-	  seconds = bcd_to_decimal(received_data[0]);
-	  minutes = bcd_to_decimal(received_data[1]);
-	  hours = bcd_to_decimal(received_data[2]);
-	  weekday = bcd_to_decimal(received_data[3]);
-	  date = bcd_to_decimal(received_data[4]);
-	  month = bcd_to_decimal(received_data[5]);
-	  year = bcd_to_decimal(received_data[6]);
-	  printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
-	  printf("%i : %i : %i\n", hours, minutes, seconds);
-	  printf("+-------------+\n");
+	  display_on_clock(&time);
+	  // printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
+	  // printf("%i : %i : %i\n", hours, minutes, seconds);
+	  // printf("+-------------+\n");
 
 	  HAL_Delay(50);
 

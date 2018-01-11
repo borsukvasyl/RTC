@@ -46,17 +46,35 @@
 
 #include "lcd5110.h"
 
-#define RTC_ADDRESS 0x68*2
-#define NUMBER_OF_DAYS_IN_WEEK 7
+#define RTC_ADDRESS                 0x68*2
+#define NUMBER_OF_DAYS_IN_WEEK      7
+
+#define LCD_CS_Pin                  GPIO_PIN_14
+#define LCD_CS_GPIO_Port            GPIOB
+#define LCD_RST_Pin                 GPIO_PIN_11
+#define LCD_RST_GPIO_Port           GPIOB
+#define LCD_DC_Pin                  GPIO_PIN_12
+#define LCD_DC_GPIO_Port            GPIOB
+
+#define KEYPAD_PIN_COL0				GPIO_PIN_7
+#define KEYPAD_PIN_COL1				GPIO_PIN_5
+#define KEYPAD_PIN_COL2				GPIO_PIN_1
+#define KEYPAD_PIN_COL3				GPIO_PIN_7
+#define KEYPAD_GPIO_COL0			GPIOA
+#define KEYPAD_GPIO_COL1			GPIOC
+#define KEYPAD_GPIO_COL2			GPIOB
+#define KEYPAD_GPIO_COL3			GPIOE
+
+#define KEYPAD_PIN_ROW0				GPIO_PIN_1
+#define KEYPAD_PIN_ROW1				GPIO_PIN_3
+#define KEYPAD_PIN_ROW2				GPIO_PIN_4
+#define KEYPAD_PIN_ROW3				GPIO_PIN_5
+#define KEYPAD_GPIO_ROW0			GPIOA
+#define KEYPAD_GPIO_ROW1			GPIOA
+#define KEYPAD_GPIO_ROW2			GPIOF
+#define KEYPAD_GPIO_ROW3			GPIOA
 
 // extern void initialise_monitor_handles(void);
-
-#define LCD_CS_Pin GPIO_PIN_12
-#define LCD_CS_GPIO_Port GPIOB
-#define LCD_RST_Pin GPIO_PIN_11
-#define LCD_RST_GPIO_Port GPIOB
-#define LCD_DC_Pin GPIO_PIN_13
-#define LCD_DC_GPIO_Port GPIOB
 
 /* USER CODE END Includes */
 
@@ -112,7 +130,7 @@ int RTC_read_data(DS3231_Time* time) {
 	uint8_t received_data[7];
 	HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
 	time->seconds = bcd_to_decimal(received_data[0]);
-    time->minutes = bcd_to_decimal(received_data[1]);
+	time->minutes = bcd_to_decimal(received_data[1]);
 	time->hours = bcd_to_decimal(received_data[2]);
 	time->weekday = bcd_to_decimal(received_data[3]);
 	time->date = bcd_to_decimal(received_data[4]);
@@ -121,16 +139,20 @@ int RTC_read_data(DS3231_Time* time) {
 	return 0;
 }
 
+const unsigned gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2, KEYPAD_GPIO_COL3};
+const unsigned pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2, KEYPAD_PIN_COL3};
 
-LCD5110_display lcd1; // display initialization
+int read_user_data(DS3231_Time* time) {
+
+}
+
+
+LCD5110_display lcd1;
 
 const char *weekday_names[NUMBER_OF_DAYS_IN_WEEK] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 inline char* convert_weekday(int weekday_number){ // weekday in range [1, 7]
-  if (weekday_number > NUMBER_OF_DAYS_IN_WEEK || weekday_number <= 0)
-    return "";
-  else
-    return weekday_names[weekday_number-1];
+    return weekday_names[weekday_number - 1];
 }
 
 void display_on_clock(DS3231_Time* time){
@@ -174,7 +196,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   DS3231_Time time;
-  time.seconds = 55;
+  time.seconds = 40;
   time.minutes = 59;
   time.hours = 23;
   time.weekday = 1;
@@ -185,12 +207,12 @@ int main(void)
 
 
   lcd1.hw_conf.spi_handle = &hspi2;
-  lcd1.hw_conf.spi_cs_pin = GPIO_PIN_14;
-  lcd1.hw_conf.spi_cs_port = GPIOB;
-  lcd1.hw_conf.rst_pin =  GPIO_PIN_11;
-  lcd1.hw_conf.rst_port = GPIOB;
-  lcd1.hw_conf.dc_pin =  GPIO_PIN_12;
-  lcd1.hw_conf.dc_port = GPIOB;
+  lcd1.hw_conf.spi_cs_pin = LCD_CS_Pin;
+  lcd1.hw_conf.spi_cs_port = LCD_CS_GPIO_Port;
+  lcd1.hw_conf.rst_pin =  LCD_RST_Pin;
+  lcd1.hw_conf.rst_port = LCD_RST_GPIO_Port;
+  lcd1.hw_conf.dc_pin =  LCD_DC_Pin;
+  lcd1.hw_conf.dc_port = LCD_DC_GPIO_Port;
   lcd1.def_scr = lcd5110_def_scr;
   LCD5110_init(&lcd1.hw_conf, LCD5110_NORMAL_MODE, 0x40, 2, 3);
 
@@ -211,7 +233,7 @@ int main(void)
 	  // printf("%i : %i : %i\n", hours, minutes, seconds);
 	  // printf("+-------------+\n");
 
-	  HAL_Delay(50);
+	  HAL_Delay(33);
 
   }
   /* USER CODE END 3 */

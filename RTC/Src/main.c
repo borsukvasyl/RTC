@@ -96,47 +96,47 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 
 typedef struct {
-  uint8_t seconds; //Seconds parameter, from 00 to 59
-  uint8_t minutes; //Minutes parameter, from 00 to 59
-  uint8_t hours;   //Hours parameter, 24Hour mode, 00 to 23
-  uint8_t weekday; //Day in a week, from 1 to 7
-  uint8_t date;    //Date in a month, 1 to 31
-  uint8_t month;   //Month in a year, 1 to 12
-  uint8_t year;    //Year parameter
+    uint8_t seconds; //Seconds parameter, from 00 to 59
+    uint8_t minutes; //Minutes parameter, from 00 to 59
+    uint8_t hours;   //Hours parameter, 24Hour mode, 00 to 23
+    uint8_t weekday; //Day in a week, from 1 to 7
+    uint8_t date;    //Date in a month, 1 to 31
+    uint8_t month;   //Month in a year, 1 to 12
+    uint8_t year;    //Year parameter
 } DS3231_Time;
 
 inline int bcd_to_decimal(uint8_t bcd_value) {
-	return ((bcd_value & 0xF0) >> 4) * 10 + (bcd_value & 0x0F);
+    return ((bcd_value & 0xF0) >> 4) * 10 + (bcd_value & 0x0F);
 }
 
 inline int decimal_to_bcd(uint8_t decimal) {
-	return ((decimal / 10) << 4) + decimal % 10;
+    return ((decimal / 10) << 4) + decimal % 10;
 }
 
 int RTC_write_data(DS3231_Time* time) {
-	uint8_t send_data[7];
-	send_data[0] = decimal_to_bcd(time->seconds);
-	send_data[1] = decimal_to_bcd(time->minutes);
-	send_data[2] = decimal_to_bcd(time->hours);
-	send_data[3] = decimal_to_bcd(time->weekday);
-	send_data[4] = decimal_to_bcd(time->date);
-	send_data[5] = decimal_to_bcd(time->month);
-	send_data[6] = decimal_to_bcd(time->year);
-	HAL_I2C_Mem_Write(&hi2c1, RTC_ADDRESS, 0, 1, send_data, 7, 500);
-	return 0;
+    uint8_t send_data[7];
+    send_data[0] = decimal_to_bcd(time->seconds);
+    send_data[1] = decimal_to_bcd(time->minutes);
+    send_data[2] = decimal_to_bcd(time->hours);
+    send_data[3] = decimal_to_bcd(time->weekday);
+    send_data[4] = decimal_to_bcd(time->date);
+    send_data[5] = decimal_to_bcd(time->month);
+    send_data[6] = decimal_to_bcd(time->year);
+    HAL_I2C_Mem_Write(&hi2c1, RTC_ADDRESS, 0, 1, send_data, 7, 500);
+    return 0;
 }
 
 int RTC_read_data(DS3231_Time* time) {
-	uint8_t received_data[7];
-	HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
-	time->seconds = bcd_to_decimal(received_data[0]);
-	time->minutes = bcd_to_decimal(received_data[1]);
-	time->hours = bcd_to_decimal(received_data[2]);
-	time->weekday = bcd_to_decimal(received_data[3]);
-	time->date = bcd_to_decimal(received_data[4]);
-	time->month = bcd_to_decimal(received_data[5]);
-	time->year = bcd_to_decimal(received_data[6]);
-	return 0;
+    uint8_t received_data[7];
+    HAL_I2C_Mem_Read(&hi2c1, RTC_ADDRESS, 0, 1, received_data, 7, 500);
+    time->seconds = bcd_to_decimal(received_data[0]);
+    time->minutes = bcd_to_decimal(received_data[1]);
+    time->hours = bcd_to_decimal(received_data[2]);
+    time->weekday = bcd_to_decimal(received_data[3]);
+    time->date = bcd_to_decimal(received_data[4]);
+    time->month = bcd_to_decimal(received_data[5]);
+    time->year = bcd_to_decimal(received_data[6]);
+    return 0;
 }
 
 LCD5110_display lcd1;
@@ -148,10 +148,10 @@ inline char* convert_weekday(int weekday_number){ // weekday in range [1, 7]
 }
 
 void display_on_clock(DS3231_Time* time){
-	LCD5110_clear_scr(&lcd1.hw_conf);
-	LCD5110_set_cursor(0,0, &lcd1.hw_conf);
-	LCD5110_printf(&lcd1, BLACK, "   %02d:%02d:%02d\n %s\n %02d.%02d.%d\n",
-			time->hours, time->minutes, time->seconds, convert_weekday(time->weekday), time->date, time->month, time->year);
+    LCD5110_clear_scr(&lcd1.hw_conf);
+    LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+    LCD5110_printf(&lcd1, BLACK, "   %02d:%02d:%02d\n %s\n %02d.%02d.20%d\n",
+            time->hours, time->minutes, time->seconds, convert_weekday(time->weekday), time->date, time->month, time->year);
 }
 
 GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2};
@@ -162,41 +162,41 @@ uint16_t row_pins[] = {KEYPAD_PIN_ROW0, KEYPAD_PIN_ROW1, KEYPAD_PIN_ROW2, KEYPAD
 int symbs[3][4] = {{1, 4, 7, -1}, {2, 5, 8, 0}, {3, 6, 9, -1}};
 
 int read_button() {
-	for (int col_ind = 0; col_ind < 3; col_ind++) {
-	    HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_SET);
-	    for (int row_ind = 0; row_ind < 4; row_ind++) {
-			if (HAL_GPIO_ReadPin(row_gpios[row_ind], row_pins[row_ind])) {
+    for (int col_ind = 0; col_ind < 3; col_ind++) {
+        HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_SET);
+        for (int row_ind = 0; row_ind < 4; row_ind++) {
+            if (HAL_GPIO_ReadPin(row_gpios[row_ind], row_pins[row_ind])) {
                 HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_RESET);
                 return symbs[col_ind][row_ind];
-	    	}
-	    }
-	    HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_RESET);
-	}
-	return -1;
+            }
+        }
+        HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_RESET);
+    }
+    return -1;
 }
 
 int read_user_data(DS3231_Time* time) {
-	int my_time[13] = {0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0};
-	int value = -1;
+    int my_time[13] = {0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0};
+    int value = -1;
 
     LCD5110_clear_scr(&lcd1.hw_conf);
     LCD5110_set_cursor(0,0, &lcd1.hw_conf);
-    LCD5110_printf(&lcd1, BLACK, "%d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
+    LCD5110_printf(&lcd1, BLACK, "   %d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
             my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
             my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
 
-	for (int my_time_ind = 0; my_time_ind < 13; my_time_ind++) {
+    for (int my_time_ind = 0; my_time_ind < 13; my_time_ind++) {
         while (1) {
-        	value = read_button();
-        	if (value != -1) {
-        		my_time[my_time_ind] = value;
-        		LCD5110_clear_scr(&lcd1.hw_conf);
+            value = read_button();
+            if (value != -1) {
+                my_time[my_time_ind] = value;
+                LCD5110_clear_scr(&lcd1.hw_conf);
                 LCD5110_set_cursor(0,0, &lcd1.hw_conf);
-                LCD5110_printf(&lcd1, BLACK, "%d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
+                LCD5110_printf(&lcd1, BLACK, "   %d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
                         my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
-						my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
-        		HAL_Delay(500);
-        		break;
+                        my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
+                HAL_Delay(500);
+                break;
         	}
         }
 	}
@@ -267,15 +267,10 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  RTC_read_data(&time);
+    RTC_read_data(&time);
 
-	  display_on_clock(&time);
-	  // printf("year: %i; month: %i; date: %i; weekday: %i\n", year, month, date, weekday);
-	  // printf("%i : %i : %i\n", hours, minutes, seconds);
-	  // printf("+-------------+\n");
-
-	  HAL_Delay(33);
-
+    display_on_clock(&time);
+    HAL_Delay(33);
   }
   /* USER CODE END 3 */
 

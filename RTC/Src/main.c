@@ -9,7 +9,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2017 STMicroelectronics
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -74,7 +74,7 @@
 #define KEYPAD_GPIO_ROW2			GPIOF
 #define KEYPAD_GPIO_ROW3			GPIOA
 
-// extern void initialise_monitor_handles(void);
+//extern void initialise_monitor_handles(void);
 
 /* USER CODE END Includes */
 
@@ -139,14 +139,6 @@ int RTC_read_data(DS3231_Time* time) {
 	return 0;
 }
 
-const unsigned gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2, KEYPAD_GPIO_COL3};
-const unsigned pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2, KEYPAD_PIN_COL3};
-
-int read_user_data(DS3231_Time* time) {
-
-}
-
-
 LCD5110_display lcd1;
 
 const char *weekday_names[NUMBER_OF_DAYS_IN_WEEK] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
@@ -160,6 +152,62 @@ void display_on_clock(DS3231_Time* time){
 	LCD5110_set_cursor(0,0, &lcd1.hw_conf);
 	LCD5110_printf(&lcd1, BLACK, "   %02d:%02d:%02d\n %s\n %02d.%02d.%d\n",
 			time->hours, time->minutes, time->seconds, convert_weekday(time->weekday), time->date, time->month, time->year);
+}
+
+GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2};
+uint16_t column_pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2};
+GPIO_TypeDef* row_gpios[] = {KEYPAD_GPIO_ROW0, KEYPAD_GPIO_ROW1, KEYPAD_GPIO_ROW2, KEYPAD_GPIO_ROW3};
+uint16_t row_pins[] = {KEYPAD_PIN_ROW0, KEYPAD_PIN_ROW1, KEYPAD_PIN_ROW2, KEYPAD_PIN_ROW3};
+
+int symbs[3][4] = {{1, 4, 7, -1}, {2, 5, 8, 0}, {3, 6, 9, -1}};
+
+int read_button() {
+	for (int col_ind = 0; col_ind < 3; col_ind++) {
+	    HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_SET);
+	    for (int row_ind = 0; row_ind < 4; row_ind++) {
+			if (HAL_GPIO_ReadPin(row_gpios[row_ind], row_pins[row_ind])) {
+                HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_RESET);
+                return symbs[col_ind][row_ind];
+	    	}
+	    }
+	    HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_RESET);
+	}
+	return -1;
+}
+
+int read_user_data(DS3231_Time* time) {
+	int my_time[13] = {0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0};
+	int value = -1;
+
+    LCD5110_clear_scr(&lcd1.hw_conf);
+    LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+    LCD5110_printf(&lcd1, BLACK, "%d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
+            my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
+            my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
+
+	for (int my_time_ind = 0; my_time_ind < 13; my_time_ind++) {
+        while (1) {
+        	value = read_button();
+        	if (value != -1) {
+        		my_time[my_time_ind] = value;
+        		LCD5110_clear_scr(&lcd1.hw_conf);
+                LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+                LCD5110_printf(&lcd1, BLACK, "%d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
+                        my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
+						my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
+        		HAL_Delay(500);
+        		break;
+        	}
+        }
+	}
+    time->seconds = my_time[4] * 10 + my_time[5];
+    time->minutes = my_time[2] * 10 + my_time[3];
+    time->hours = my_time[0] * 10 + my_time[1];
+    time->weekday = my_time[6];
+    time->date = my_time[7] * 10 + my_time[8];
+    time->month = my_time[9] * 10 + my_time[10];
+    time->year = my_time[11] * 10 + my_time[12];
+    return 0;
 }
 
 /* USER CODE END 0 */
@@ -195,17 +243,6 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  DS3231_Time time;
-  time.seconds = 40;
-  time.minutes = 59;
-  time.hours = 23;
-  time.weekday = 1;
-  time.date = 31;
-  time.month = 12;
-  time.year = 17;
-  RTC_write_data(&time);
-
-
   lcd1.hw_conf.spi_handle = &hspi2;
   lcd1.hw_conf.spi_cs_pin = LCD_CS_Pin;
   lcd1.hw_conf.spi_cs_port = LCD_CS_GPIO_Port;
@@ -215,6 +252,10 @@ int main(void)
   lcd1.hw_conf.dc_port = LCD_DC_GPIO_Port;
   lcd1.def_scr = lcd5110_def_scr;
   LCD5110_init(&lcd1.hw_conf, LCD5110_NORMAL_MODE, 0x40, 2, 3);
+
+  DS3231_Time time;
+  read_user_data(&time);
+  RTC_write_data(&time);
 
   /* USER CODE END 2 */
 

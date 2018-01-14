@@ -193,7 +193,7 @@ int read_button() {
 }
 
 int read_user_data(DS3231_Time* time) {
-	//                  h     m     s   day   d     m     y
+    //                  h     m     s   day   d     m     y
     int my_time[13] = {0,0,  0,0,  0,0,  0,  0,0,  0,0,  0,0};
     int value;
 

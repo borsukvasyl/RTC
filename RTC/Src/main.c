@@ -211,17 +211,17 @@ int read_user_data(DS3231_Time* time) {
                 else {
                     switch(value) {
                     case TO_PREVIOUS_SYMBOL:
-                    	my_time_ind--;
-                    	break;
+                        my_time_ind--;
+                        break;
                     case TO_NEXT_SYMBOL:
-                    	my_time_ind++;
-                    	break;
+                        my_time_ind++;
+                        break;
                     }
                 }
                 LCD5110_display_timearray(&my_time, my_time_ind);
                 HAL_Delay(500);
                 break;
-        	}
+            }
         }
 	}
     time->seconds = my_time[4] * 10 + my_time[5];

@@ -56,23 +56,23 @@
 #define LCD_DC_Pin                  GPIO_PIN_12
 #define LCD_DC_GPIO_Port            GPIOB
 
-#define KEYPAD_PIN_COL0				GPIO_PIN_7
-#define KEYPAD_PIN_COL1				GPIO_PIN_5
-#define KEYPAD_PIN_COL2				GPIO_PIN_1
-#define KEYPAD_PIN_COL3				GPIO_PIN_7
-#define KEYPAD_GPIO_COL0			GPIOA
-#define KEYPAD_GPIO_COL1			GPIOC
-#define KEYPAD_GPIO_COL2			GPIOB
-#define KEYPAD_GPIO_COL3			GPIOE
+#define KEYPAD_PIN_COL0             GPIO_PIN_7
+#define KEYPAD_PIN_COL1             GPIO_PIN_5
+#define KEYPAD_PIN_COL2             GPIO_PIN_1
+#define KEYPAD_PIN_COL3             GPIO_PIN_7
+#define KEYPAD_GPIO_COL0            GPIOA
+#define KEYPAD_GPIO_COL1            GPIOC
+#define KEYPAD_GPIO_COL2            GPIOB
+#define KEYPAD_GPIO_COL3            GPIOE
 
-#define KEYPAD_PIN_ROW0				GPIO_PIN_1
-#define KEYPAD_PIN_ROW1				GPIO_PIN_3
-#define KEYPAD_PIN_ROW2				GPIO_PIN_4
-#define KEYPAD_PIN_ROW3				GPIO_PIN_5
-#define KEYPAD_GPIO_ROW0			GPIOA
-#define KEYPAD_GPIO_ROW1			GPIOA
-#define KEYPAD_GPIO_ROW2			GPIOF
-#define KEYPAD_GPIO_ROW3			GPIOA
+#define KEYPAD_PIN_ROW0             GPIO_PIN_1
+#define KEYPAD_PIN_ROW1             GPIO_PIN_3
+#define KEYPAD_PIN_ROW2             GPIO_PIN_4
+#define KEYPAD_PIN_ROW3             GPIO_PIN_5
+#define KEYPAD_GPIO_ROW0            GPIOA
+#define KEYPAD_GPIO_ROW1            GPIOA
+#define KEYPAD_GPIO_ROW2            GPIOF
+#define KEYPAD_GPIO_ROW3            GPIOA
 
 //extern void initialise_monitor_handles(void);
 
@@ -147,11 +147,25 @@ inline char* convert_weekday(int weekday_number){ // weekday in range [1, 7]
     return weekday_names[weekday_number - 1];
 }
 
-void display_on_clock(DS3231_Time* time){
+void LCD5110_display_time(DS3231_Time* time){
     LCD5110_clear_scr(&lcd1.hw_conf);
     LCD5110_set_cursor(0,0, &lcd1.hw_conf);
     LCD5110_printf(&lcd1, BLACK, "   %02d:%02d:%02d\n %s\n %02d.%02d.20%d\n",
             time->hours, time->minutes, time->seconds, convert_weekday(time->weekday), time->date, time->month, time->year);
+}
+
+void LCD5110_display_timearray(int* timearray, int current_symbol) {
+    char to_display[13];
+    for (int i = 0; i < 13; i++) {
+        to_display[i] = (i == current_symbol)?'_':timearray[i] + '0';
+	}
+
+    LCD5110_clear_scr(&lcd1.hw_conf);
+    LCD5110_set_cursor(0,0, &lcd1.hw_conf);
+    LCD5110_printf(&lcd1, BLACK, "   %c%c:%c%c:%c%c\n %c\n %c%c.%c%c.20%c%c\n",
+            to_display[0], to_display[1], to_display[2], to_display[3], to_display[4], to_display[5],
+			to_display[6],
+			to_display[7], to_display[8], to_display[9], to_display[10], to_display[11], to_display[12]);
 }
 
 GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2};
@@ -159,7 +173,10 @@ uint16_t column_pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2};
 GPIO_TypeDef* row_gpios[] = {KEYPAD_GPIO_ROW0, KEYPAD_GPIO_ROW1, KEYPAD_GPIO_ROW2, KEYPAD_GPIO_ROW3};
 uint16_t row_pins[] = {KEYPAD_PIN_ROW0, KEYPAD_PIN_ROW1, KEYPAD_PIN_ROW2, KEYPAD_PIN_ROW3};
 
-int symbs[3][4] = {{1, 4, 7, -1}, {2, 5, 8, 0}, {3, 6, 9, -1}};
+
+#define TO_PREVIOUS_SYMBOL               10
+#define TO_NEXT_SYMBOL                   11
+int symbs[3][4] = {{1, 4, 7, TO_PREVIOUS_SYMBOL}, {2, 5, 8, 0}, {3, 6, 9, TO_NEXT_SYMBOL}};
 
 int read_button() {
     for (int col_ind = 0; col_ind < 3; col_ind++) {
@@ -176,25 +193,32 @@ int read_button() {
 }
 
 int read_user_data(DS3231_Time* time) {
-    int my_time[13] = {0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0};
-    int value = -1;
+	//                  h     m     s   day   d     m     y
+    int my_time[13] = {0,0,  0,0,  0,0,  0,  0,0,  0,0,  0,0};
+    int value;
 
-    LCD5110_clear_scr(&lcd1.hw_conf);
-    LCD5110_set_cursor(0,0, &lcd1.hw_conf);
-    LCD5110_printf(&lcd1, BLACK, "   %d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
-            my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
-            my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
+    LCD5110_display_timearray(&my_time, 0);
 
-    for (int my_time_ind = 0; my_time_ind < 13; my_time_ind++) {
+    int my_time_ind = 0;
+    while (my_time_ind < 13) {
         while (1) {
             value = read_button();
             if (value != -1) {
-                my_time[my_time_ind] = value;
-                LCD5110_clear_scr(&lcd1.hw_conf);
-                LCD5110_set_cursor(0,0, &lcd1.hw_conf);
-                LCD5110_printf(&lcd1, BLACK, "   %d%d:%d%d:%d%d\n %d\n %d%d.%d%d.20%d%d\n",
-                        my_time[0], my_time[1], my_time[2], my_time[3], my_time[4], my_time[5], my_time[6],
-                        my_time[7], my_time[8], my_time[9], my_time[10], my_time[11], my_time[12]);
+            	if (value < 10) {
+                    my_time[my_time_ind] = value;
+                    my_time_ind++;
+                }
+                else {
+                    switch(value) {
+                    case TO_PREVIOUS_SYMBOL:
+                    	my_time_ind--;
+                    	break;
+                    case TO_NEXT_SYMBOL:
+                    	my_time_ind++;
+                    	break;
+                    }
+                }
+                LCD5110_display_timearray(&my_time, my_time_ind);
                 HAL_Delay(500);
                 break;
         	}
@@ -269,7 +293,7 @@ int main(void)
 
     RTC_read_data(&time);
 
-    display_on_clock(&time);
+    LCD5110_display_time(&time);
     HAL_Delay(33);
   }
   /* USER CODE END 3 */

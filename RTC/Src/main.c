@@ -164,8 +164,8 @@ void LCD5110_display_timearray(int* timearray, int current_symbol) {
     LCD5110_set_cursor(0,0, &lcd1.hw_conf);
     LCD5110_printf(&lcd1, BLACK, "   %c%c:%c%c:%c%c\n %c\n %c%c.%c%c.20%c%c\n",
             to_display[0], to_display[1], to_display[2], to_display[3], to_display[4], to_display[5],
-			to_display[6],
-			to_display[7], to_display[8], to_display[9], to_display[10], to_display[11], to_display[12]);
+            to_display[6],
+            to_display[7], to_display[8], to_display[9], to_display[10], to_display[11], to_display[12]);
 }
 
 GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2};

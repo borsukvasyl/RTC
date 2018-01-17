@@ -168,18 +168,19 @@ void LCD5110_display_timearray(int* timearray, int current_symbol) {
             to_display[7], to_display[8], to_display[9], to_display[10], to_display[11], to_display[12]);
 }
 
-GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2};
-uint16_t column_pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2};
+GPIO_TypeDef* column_gpios[] = {KEYPAD_GPIO_COL0, KEYPAD_GPIO_COL1, KEYPAD_GPIO_COL2, KEYPAD_GPIO_COL3};
+uint16_t column_pins[] = {KEYPAD_PIN_COL0, KEYPAD_PIN_COL1, KEYPAD_PIN_COL2, KEYPAD_PIN_COL3};
 GPIO_TypeDef* row_gpios[] = {KEYPAD_GPIO_ROW0, KEYPAD_GPIO_ROW1, KEYPAD_GPIO_ROW2, KEYPAD_GPIO_ROW3};
 uint16_t row_pins[] = {KEYPAD_PIN_ROW0, KEYPAD_PIN_ROW1, KEYPAD_PIN_ROW2, KEYPAD_PIN_ROW3};
 
 
 #define TO_PREVIOUS_SYMBOL               10
 #define TO_NEXT_SYMBOL                   11
-int symbs[3][4] = {{1, 4, 7, TO_PREVIOUS_SYMBOL}, {2, 5, 8, 0}, {3, 6, 9, TO_NEXT_SYMBOL}};
+#define EXIT_MENU                        12
+int symbs[4][4] = {{1, 4, 7, TO_PREVIOUS_SYMBOL}, {2, 5, 8, 0}, {3, 6, 9, TO_NEXT_SYMBOL}, {-1, -1, -1, EXIT_MENU}};
 
 int read_button() {
-    for (int col_ind = 0; col_ind < 3; col_ind++) {
+    for (int col_ind = 0; col_ind < 4; col_ind++) {
         HAL_GPIO_WritePin(column_gpios[col_ind], column_pins[col_ind], GPIO_PIN_SET);
         for (int row_ind = 0; row_ind < 4; row_ind++) {
             if (HAL_GPIO_ReadPin(row_gpios[row_ind], row_pins[row_ind])) {
@@ -192,7 +193,7 @@ int read_button() {
     return -1;
 }
 
-int read_user_data(DS3231_Time* time) {
+int read_user_data(DS3231_Time* time, int allow_exit) {
     //                  h     m     s   day   d     m     y
     int my_time[13] = {0,0,  0,0,  0,0,  0,  0,0,  0,0,  0,0};
     int value;
@@ -211,10 +212,13 @@ int read_user_data(DS3231_Time* time) {
                 else {
                     switch(value) {
                     case TO_PREVIOUS_SYMBOL:
-                        my_time_ind--;
+                        if (my_time_ind > 0) my_time_ind--;
                         break;
                     case TO_NEXT_SYMBOL:
                         my_time_ind++;
+                        break;
+                    case EXIT_MENU:
+                        if (allow_exit) return 1;
                         break;
                     }
                 }
@@ -278,7 +282,7 @@ int main(void)
     LCD5110_init(&lcd1.hw_conf, LCD5110_NORMAL_MODE, 0x40, 2, 3);
 
     DS3231_Time time;
-    read_user_data(&time);
+    read_user_data(&time, 0);
     RTC_write_data(&time);
 
     HAL_GPIO_WritePin(KEYPAD_GPIO_COL3, KEYPAD_PIN_COL3, GPIO_PIN_SET);
@@ -292,10 +296,11 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
     	if (HAL_GPIO_ReadPin(KEYPAD_GPIO_ROW3, KEYPAD_PIN_ROW3)) {
-    		HAL_GPIO_WritePin(KEYPAD_GPIO_COL3, KEYPAD_PIN_COL3, GPIO_PIN_RESET);
-    		read_user_data(&time);
-    		RTC_write_data(&time);
-    		HAL_GPIO_WritePin(KEYPAD_GPIO_COL3, KEYPAD_PIN_COL3, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(KEYPAD_GPIO_COL3, KEYPAD_PIN_COL3, GPIO_PIN_RESET);
+            HAL_Delay(500);
+            if (!read_user_data(&time, 1)) RTC_write_data(&time);
+            HAL_Delay(500);
+            HAL_GPIO_WritePin(KEYPAD_GPIO_COL3, KEYPAD_PIN_COL3, GPIO_PIN_SET);
     	}
 
         RTC_read_data(&time);
